@@ -1,9 +1,13 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
+import dynamic from 'next/dynamic';
 import { SectorSummary } from '@/types/portfolio';
 import { formatCurrency, formatPercent } from '@/lib/portfolio-utils';
+
+const Progress = dynamic(() => import('@/components/ui/progress').then(m => m.Progress), {
+  ssr: false,
+});
 
 interface SectorSummaryProps {
   sectors: SectorSummary[];
@@ -31,8 +35,9 @@ export function SectorSummaryComponent({ sectors }: SectorSummaryProps) {
         <div className="space-y-4">
           {sectors.map((sector) => {
             const isPositive = sector.totalGainLoss >= 0;
-            const colorClass = sectorColors[sector.sector as keyof typeof sectorColors] || 'bg-gray-500';
-            
+            const colorClass =
+              sectorColors[sector.sector as keyof typeof sectorColors] || 'bg-gray-500';
+
             return (
               <div key={sector.sector} className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -47,18 +52,17 @@ export function SectorSummaryComponent({ sectors }: SectorSummaryProps) {
                     <div className="font-semibold text-slate-800">
                       {formatCurrency(sector.totalValue)}
                     </div>
-                    <div className={`text-sm ${
-                      isPositive ? 'text-green-600' : 'text-red-600'
-                    }`}>
+                    <div
+                      className={`text-sm ${
+                        isPositive ? 'text-green-600' : 'text-red-600'
+                      }`}
+                    >
                       {formatPercent(sector.totalGainLossPercent)}
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Progress 
-                    value={sector.weight} 
-                    className="flex-1 h-2"
-                  />
+                  <Progress value={sector.weight} className="flex-1 h-2" />
                   <span className="text-sm text-slate-600 min-w-[3rem]">
                     {sector.weight.toFixed(1)}%
                   </span>
