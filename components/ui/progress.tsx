@@ -1,35 +1,35 @@
-'use client';
+"use client"
 
-import * as React from 'react';
-import * as ProgressPrimitive from '@radix-ui/react-progress';
-import { cn } from '@/lib/utils';
+import * as React from "react"
+import { cn } from "@/lib/utils"
 
-const Progress = React.forwardRef<
-  React.ElementRef<typeof ProgressPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>
->(({ className, value = 0, max = 100, ...props }, ref) => {
-  // Coerce null or undefined to 0
-  const safeValue = value ?? 0;
-  const safeMax = max ?? 100;
+interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
+  value?: number
+  max?: number
+}
 
-  const clampedValue = Math.min(Math.max(safeValue, 0), Math.max(safeMax, 1));
+const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
+  ({ className, value = 0, max = 100, ...props }, ref) => {
+    const percentage = Math.min(Math.max(value ?? 0, 0), max) // clamp 0–100
 
-  return (
-    <ProgressPrimitive.Root
-      ref={ref}
-      className={cn('relative h-4 w-full overflow-hidden rounded-full bg-secondary', className)}
-      value={clampedValue}
-      max={safeMax}
-      {...props}
-    >
-      <ProgressPrimitive.Indicator
-        className="h-full w-full flex-1 bg-primary transition-all"
-        style={{ transform: `translateX(-${100 - (clampedValue / safeMax) * 100}%)` }}
-      />
-    </ProgressPrimitive.Root>
-  );
-});
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "relative h-4 w-full overflow-hidden rounded-full bg-secondary",
+          className
+        )}
+        {...props}
+      >
+        <div
+          className="h-full bg-primary transition-all"
+          style={{ width: `${(percentage / max) * 100}%` }}
+        />
+      </div>
+    )
+  }
+)
 
-Progress.displayName = 'Progress';
+Progress.displayName = "Progress"
 
-export { Progress };
+export { Progress }

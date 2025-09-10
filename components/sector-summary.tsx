@@ -1,13 +1,9 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import dynamic from 'next/dynamic';
+import { Progress } from '@/components/ui/progress'; // ✅ Direct import, no dynamic
 import { SectorSummary } from '@/types/portfolio';
 import { formatCurrency, formatPercent } from '@/lib/portfolio-utils';
-
-const Progress = dynamic(() => import('@/components/ui/progress').then(m => m.Progress), {
-  ssr: false,
-});
 
 interface SectorSummaryProps {
   sectors: SectorSummary[];
